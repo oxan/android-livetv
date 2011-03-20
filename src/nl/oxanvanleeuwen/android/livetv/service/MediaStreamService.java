@@ -11,20 +11,27 @@ import org.json.*;
 
 public class MediaStreamService {
 	private String baseURL;
+	private ArrayList<Channel> channellist;
 	
 	public MediaStreamService(String baseURL) {
 		this.baseURL = baseURL;
 	}
 	
-	public List<Channel> getChannels() throws IOException, JSONException { 
-		ArrayList<Channel> items = new ArrayList<Channel>();
+	public List<Channel> getChannels() throws IOException, JSONException {
+		if(channellist != null)
+			return channellist;
+		channellist = new ArrayList<Channel>();
 		String json = Util.getHttpResource(baseURL + "/json/GetChannels");
 		JSONTokener tokener = new JSONTokener(json);
 		JSONArray results = (JSONArray) tokener.nextValue();
 		for(int i = 0; i < results.length(); i++) {
-			items.add(new Channel(results.getJSONObject(i)));
+			channellist.add(new Channel(results.getJSONObject(i)));
 		}
-		return items;
+		return channellist;
+	}
+	
+	public List<Channel> getChannelsCached() {
+		return channellist;
 	}
 	
 	private static class Util {

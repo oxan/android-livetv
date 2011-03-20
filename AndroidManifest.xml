@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name="nl.oxanvanleeuwen.android.livetv.activites.ViewStream"
+        <activity android:name="nl.oxanvanleeuwen.android.livetv.activities.ViewStream"
         		  android:label="@string/viewstream"
         		  android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>

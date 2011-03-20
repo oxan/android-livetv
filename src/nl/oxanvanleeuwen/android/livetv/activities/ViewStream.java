@@ -15,6 +15,8 @@ public class ViewStream extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video);
+        Log.i(TAG, "Starting to play " + getIntent().getStringExtra("url"));
+        /*
         
         Log.v(TAG, "Got view");
         VideoView view = (VideoView)findViewById(R.id.video);
@@ -33,5 +35,6 @@ public class ViewStream extends Activity {
         
         Log.v(TAG, "Starting");
         view.start();
+        */
     }
 }
