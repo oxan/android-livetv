@@ -3,4 +3,6 @@
     <string name="availablechannellist">Channels available for Live TV streaming</string>
     <string name="app_name">Live TV</string>
     <string name="viewstream">Watch</string>
+    <string name="streamfailed">Failed to start stream</string>
+    <string name="channelfailed">Failed to load list of channels</string>
 </resources>

@@ -12,6 +12,7 @@ import org.json.*;
 public class MediaStreamService {
 	private String baseURL;
 	private ArrayList<Channel> channellist;
+	private Transcoder androidTranscoder;
 	
 	public MediaStreamService(String baseURL) {
 		this.baseURL = baseURL;
@@ -32,6 +33,29 @@ public class MediaStreamService {
 	
 	public List<Channel> getChannelsCached() {
 		return channellist;
+	}
+	
+	public Transcoder getTranscoder() throws IOException, JSONException {
+		if(androidTranscoder != null)
+			return androidTranscoder;
+		
+		String json = Util.getHttpResource(baseURL + "/json/GetTranscoders");
+		JSONTokener tokener = new JSONTokener(json);
+		JSONArray results = (JSONArray) tokener.nextValue();
+		for(int i = 0; i < results.length(); i++) {
+			if(results.getJSONObject(i).getString("Name").equals("Android")) {
+				androidTranscoder = new Transcoder(results.getJSONObject(i));
+				break;
+			}
+		}
+		return androidTranscoder;
+	}
+	
+	public String getTvStreamUrl(Transcoder transcoder, Channel channel, String username, String password) throws IOException, JSONException {
+		String url = baseURL + "/json/GetTranscodedTvStreamUrl?idChannel=" + channel.id + "&idTranscoder=" + transcoder.id + "&username=" + username + "&password=" + password;
+		String json = Util.getHttpResource(url);
+		JSONTokener tokener = new JSONTokener(json);
+		return (String)tokener.nextValue();
 	}
 	
 	private static class Util {

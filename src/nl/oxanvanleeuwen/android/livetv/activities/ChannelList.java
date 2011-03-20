@@ -1,19 +1,19 @@
 package nl.oxanvanleeuwen.android.livetv.activities;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import org.json.JSONException;
 import nl.oxanvanleeuwen.android.livetv.R;
-import nl.oxanvanleeuwen.android.livetv.service.*;
+import nl.oxanvanleeuwen.android.livetv.service.Channel;
+import nl.oxanvanleeuwen.android.livetv.service.MediaStreamService;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.view.View;
+import android.widget.Toast;
 
 public class ChannelList extends Activity {
 	private static final String TAG = "ChannelListActivity";
@@ -41,10 +41,9 @@ public class ChannelList extends Activity {
 			ArrayAdapter<String> items = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, channels.toArray(strlist));
 			lv.setAdapter(items);
 			Log.v(TAG, "Loaded channels");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to show channel list", e);
+			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_SHORT);
 		}
 		
 		// register callback
@@ -52,7 +51,12 @@ public class ChannelList extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel channel = service.getChannelsCached().get(position);
 				Intent intent = new Intent(ChannelList.this, ViewStream.class);
-				intent.putExtra("url", "bla");
+				try {
+					intent.putExtra("url", service.getTvStreamUrl(service.getTranscoder(), channel, "admin", "admin"));
+				} catch (Exception e) {
+					Log.e(TAG, "Failed to start stream", e);
+					Toast.makeText(ChannelList.this, getString(R.string.streamfailed), Toast.LENGTH_SHORT);
+				}
 				startActivity(intent);
 			}
 		});
