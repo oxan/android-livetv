@@ -2,4 +2,5 @@
 <resources>
     <string name="availablechannellist">Channels available for Live TV streaming</string>
     <string name="app_name">Live TV</string>
+    <string name="viewstream">Watch</string>
 </resources>
