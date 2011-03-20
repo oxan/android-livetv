@@ -25,6 +25,7 @@ public class ChannelList extends Activity {
     	// init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.channellist);
+        setTitle(getResources().getText(R.string.availablechannellist));
         ListView lv = (ListView)findViewById(R.id.channellist);
         
         // set up service
