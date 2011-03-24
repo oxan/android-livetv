@@ -71,7 +71,8 @@ public class ChannelList extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel channel = service.getChannelsCached().get(position);
 				try {
-					String url = service.getTvStreamUrl(service.getTranscoder(), channel, preferences.getString("username", ""), preferences.getString("password", ""));
+					String url = service.getTvStreamUrl(service.getTranscoderById(Integer.parseInt(preferences.getString("transcoder", "1"))), channel, 
+							preferences.getString("username", ""), preferences.getString("password", ""));
 					Log.d(TAG, "Play URL: " + url);
 					Intent intent = new Intent();
 					

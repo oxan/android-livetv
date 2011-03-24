@@ -12,6 +12,7 @@ import org.json.*;
 public class MediaStreamService {
 	private String baseURL;
 	private ArrayList<Channel> channellist;
+	private ArrayList<Transcoder> transcoderlist;
 	private Transcoder androidTranscoder;
 	
 	public MediaStreamService(String baseURL) {
@@ -33,6 +34,28 @@ public class MediaStreamService {
 	
 	public List<Channel> getChannelsCached() {
 		return channellist;
+	}
+	
+	// FIXME: code duplication
+	public List<Transcoder> getTranscoderList() throws IOException, JSONException {
+		if(transcoderlist != null)
+			return transcoderlist;
+		transcoderlist = new ArrayList<Transcoder>();
+		String json = Util.getHttpResource(baseURL + "/json/GetTranscoders");
+		JSONTokener tokener = new JSONTokener(json);
+		JSONArray results = (JSONArray) tokener.nextValue();
+		for(int i = 0; i < results.length(); i++) {
+			transcoderlist.add(new Transcoder(results.getJSONObject(i)));
+		}
+		return transcoderlist;
+	}
+	
+	public Transcoder getTranscoderById(int id) throws IOException, JSONException {
+		for(Transcoder transcoder : getTranscoderList()) {
+			if(transcoder.id == id) 
+				return transcoder;
+		}
+		return null;
 	}
 	
 	public Transcoder getTranscoder() throws IOException, JSONException {

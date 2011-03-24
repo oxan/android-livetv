@@ -5,5 +5,6 @@
         <EditTextPreference android:summary="Enter base server address" android:title="Server address" android:key="address"></EditTextPreference>
         <EditTextPreference android:key="username" android:title="Username"></EditTextPreference>
         <EditTextPreference android:title="Password" android:key="password" android:password="true" />
+        <ListPreference android:summary="Select transcoder to use for encoding" android:key="transcoder" android:title="Transcoder"></ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>
