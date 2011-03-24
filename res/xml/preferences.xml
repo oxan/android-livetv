@@ -3,5 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="Server">
         <EditTextPreference android:summary="Enter base server address" android:title="Server address" android:key="address"></EditTextPreference>
+        <EditTextPreference android:key="username" android:title="Username"></EditTextPreference>
+        <EditTextPreference android:title="Password" android:key="password" android:password="true" />
     </PreferenceCategory>
 </PreferenceScreen>

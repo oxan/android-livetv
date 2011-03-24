@@ -26,6 +26,7 @@ public class ChannelList extends Activity {
 	private static final String TAG = "ChannelListActivity";
 	
 	private MediaStreamService service;
+	private SharedPreferences preferences;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,19 @@ public class ChannelList extends Activity {
         setTitle(getResources().getText(R.string.availablechannellist));
         ListView lv = (ListView)findViewById(R.id.channellist);
         
+        // load preferences
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String baseurl = preferences.getString("address", "");
+        if(baseurl.equals("") || preferences.getString("username", "").equals("") || preferences.getString("password", "").equals("")) {
+        	Intent intent = new Intent(this, Preferences.class);
+        	startActivity(intent);
+        }
+        
         // set up service
-        service = new MediaStreamService("http://mediastreamer.lan/MPWebStream/MediaStream.svc");
+        Log.d(TAG, "Using " + baseurl + " as base url for the webservice");
+        if(baseurl.substring(baseurl.length() - 1) != "/")
+        	baseurl += "/";
+        service = new MediaStreamService(baseurl + "MediaStream.svc");
         
         // show all channels
         try {
@@ -59,8 +71,8 @@ public class ChannelList extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel channel = service.getChannelsCached().get(position);
 				try {
-					String url = service.getTvStreamUrl(service.getTranscoder(), channel, "admin", "admin");
-					Log.v(TAG, "Play URL: " + url);
+					String url = service.getTvStreamUrl(service.getTranscoder(), channel, preferences.getString("username", ""), preferences.getString("password", ""));
+					Log.d(TAG, "Play URL: " + url);
 					Intent intent = new Intent();
 					
 					if(Build.VERSION.SDK_INT >= 9) {
