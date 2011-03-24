@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Server">
+        <EditTextPreference android:summary="Enter base server address" android:title="Server address" android:key="address"></EditTextPreference>
+    </PreferenceCategory>
+</PreferenceScreen>

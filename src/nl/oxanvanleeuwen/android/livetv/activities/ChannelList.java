@@ -6,10 +6,15 @@ import nl.oxanvanleeuwen.android.livetv.service.Channel;
 import nl.oxanvanleeuwen.android.livetv.service.MediaStreamService;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,7 +54,7 @@ public class ChannelList extends Activity {
 			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_SHORT);
 		}
 		
-		// register callback
+		// register callback when clicked on channel
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel channel = service.getChannelsCached().get(position);
@@ -74,5 +79,25 @@ public class ChannelList extends Activity {
 				}
 			}
 		});
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.mainmenu, menu);
+    	return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {    	
+    	switch (item.getItemId()) {
+    		case R.id.menu_preferences:
+    			Log.v(TAG, "Starting preferences");
+    			Intent intent = new Intent(this, Preferences.class);
+    			startActivity(intent);
+    			break;
+    	}
+    	
+    	return true;
     }
 }
