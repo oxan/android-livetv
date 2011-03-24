@@ -6,6 +6,8 @@ import nl.oxanvanleeuwen.android.livetv.service.Channel;
 import nl.oxanvanleeuwen.android.livetv.service.MediaStreamService;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,14 +53,25 @@ public class ChannelList extends Activity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel channel = service.getChannelsCached().get(position);
-				Intent intent = new Intent(ChannelList.this, ViewStream.class);
 				try {
-					intent.putExtra("url", service.getTvStreamUrl(service.getTranscoder(), channel, "admin", "admin"));
+					String url = service.getTvStreamUrl(service.getTranscoder(), channel, "admin", "admin");
+					Log.v(TAG, "Play URL: " + url);
+					Intent intent = new Intent();
+					
+					if(Build.VERSION.SDK_INT >= 9) {
+						// android 2.3+, native player
+						intent.setClass(ChannelList.this, ViewStream.class);
+						intent.putExtra("url", url);
+					} else {
+						// use external player 
+						intent.setDataAndType(Uri.parse(url), "video/M2TS");
+					}
+					
+					startActivity(intent);
 				} catch (Exception e) {
 					Log.e(TAG, "Failed to start stream", e);
 					Toast.makeText(ChannelList.this, getString(R.string.streamfailed), Toast.LENGTH_SHORT);
 				}
-				startActivity(intent);
 			}
 		});
     }
