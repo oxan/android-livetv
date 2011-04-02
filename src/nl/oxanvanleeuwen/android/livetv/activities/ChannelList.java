@@ -42,6 +42,7 @@ public class ChannelList extends Activity {
         if(baseurl.equals("") || preferences.getString("username", "").equals("") || preferences.getString("password", "").equals("")) {
         	Intent intent = new Intent(this, Preferences.class);
         	startActivity(intent);
+        	return;
         }
         
         // set up service
