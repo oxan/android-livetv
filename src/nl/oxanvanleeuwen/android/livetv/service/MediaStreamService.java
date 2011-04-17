@@ -37,20 +37,24 @@ public class MediaStreamService {
 	}
 	
 	// FIXME: code duplication
-	public List<Transcoder> getTranscoderList() throws IOException, JSONException {
-		if(transcoderlist != null)
+	public List<Transcoder> getTranscoderList() throws Exception, IOException, JSONException {
+		try {
+			if(transcoderlist != null)
+				return transcoderlist;
+			transcoderlist = new ArrayList<Transcoder>();
+			String json = Util.getHttpResource(baseURL + "/json/GetTranscoders");
+			JSONTokener tokener = new JSONTokener(json);
+			JSONArray results = (JSONArray) tokener.nextValue();
+			for(int i = 0; i < results.length(); i++) {
+				transcoderlist.add(new Transcoder(results.getJSONObject(i)));
+			}
 			return transcoderlist;
-		transcoderlist = new ArrayList<Transcoder>();
-		String json = Util.getHttpResource(baseURL + "/json/GetTranscoders");
-		JSONTokener tokener = new JSONTokener(json);
-		JSONArray results = (JSONArray) tokener.nextValue();
-		for(int i = 0; i < results.length(); i++) {
-			transcoderlist.add(new Transcoder(results.getJSONObject(i)));
+		} catch(Exception e) {
+			throw new Exception("Failed to get transcoder list from server", e);
 		}
-		return transcoderlist;
 	}
 	
-	public Transcoder getTranscoderById(int id) throws IOException, JSONException {
+	public Transcoder getTranscoderById(int id) throws Exception, IOException, JSONException {
 		for(Transcoder transcoder : getTranscoderList()) {
 			if(transcoder.id == id) 
 				return transcoder;
