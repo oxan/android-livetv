@@ -14,12 +14,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class Preferences extends PreferenceActivity {
-	private static final String TAG = "Preferences";
+	private static final String TAG = "LTVPreferences";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
+		
+		// setup a default empty transcoder list with an explanation
+		ListPreference transcoders = (ListPreference)findPreference("transcoder");
+		transcoders.setEntries(new String[] { "You need to select a valid server first" });
+		transcoders.setEntryValues(new String[] { "Invalid" });
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		generateTranscoderList(preferences);

@@ -34,18 +34,28 @@ public class ChannelList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.channellist);
         setTitle(getResources().getText(R.string.availablechannellist));
-        ListView lv = (ListView)findViewById(R.id.channellist);
         
         // load preferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String baseurl = preferences.getString("address", "");
-        if(baseurl.equals("") || preferences.getString("username", "").equals("") || preferences.getString("password", "").equals("")) {
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	// start preferences
+        if(!hasValidPreferences()) {
+        	Log.v(TAG, "Launching preferences");
         	Intent intent = new Intent(this, Preferences.class);
         	startActivity(intent);
         	return;
         }
         
+        Log.v(TAG, "Loading channel list");
+        ListView lv = (ListView)findViewById(R.id.channellist);
+        
         // set up service
+    	String baseurl = preferences.getString("address", "");
         Log.d(TAG, "Using " + baseurl + " as base url for the webservice");
         if(baseurl.substring(baseurl.length() - 1) != "/")
         	baseurl += "/";
@@ -113,5 +123,14 @@ public class ChannelList extends Activity {
     	}
     	
     	return true;
+    }
+    
+    private boolean hasValidPreferences() {
+    	return
+    		!preferences.getString("address", "").equals("") &&
+    		!preferences.getString("username", "").equals("") &&
+    		!preferences.getString("password", "").equals("") &&
+    		!preferences.getString("transcoder", "").equals("") &&
+    		!preferences.getString("transcoder", "").equals("Invalid");
     }
 }
