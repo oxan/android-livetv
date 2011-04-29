@@ -50,7 +50,7 @@ public class Preferences extends PreferenceActivity {
 				Log.v(TAG, "Generated transcoder list");
 			} catch(Exception e) {
 				Log.e(TAG, "Couldn't get transcoder list from server", e);
-				Toast.makeText((Activity)this, "Server doesn't response or server URL is invalid", Toast.LENGTH_LONG);
+				Toast.makeText((Activity)this, "Server doesn't response or server URL is invalid", Toast.LENGTH_LONG).show();
 			}
 		}
 	}

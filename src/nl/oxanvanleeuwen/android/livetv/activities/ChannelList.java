@@ -86,7 +86,7 @@ public class ChannelList extends Activity {
 					startActivity(intent);
 				} catch (Exception e) {
 					Log.e(TAG, "Failed to start stream", e);
-					Toast.makeText(ChannelList.this, getString(R.string.streamfailed), Toast.LENGTH_SHORT);
+					Toast.makeText(ChannelList.this, getString(R.string.streamfailed), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -149,7 +149,7 @@ public class ChannelList extends Activity {
     		if(result) {
     			((ListView)findViewById(R.id.channellist)).setAdapter(items);
     		} else {
-    			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_LONG);
+    			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_LONG).show();
     		}
     	}
     }
