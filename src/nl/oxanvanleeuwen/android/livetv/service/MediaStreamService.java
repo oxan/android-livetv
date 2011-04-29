@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.*;
 
 public class MediaStreamService {
@@ -87,12 +90,19 @@ public class MediaStreamService {
 	
 	private static class Util {
 		private static HttpClient http;
+		private static final int connectionTimeout = 5000; // in miliseconds
+		private static final int responseTimeout = 5000; // in milliseconds
 	
 		private static String getHttpResource(String url) throws IOException {
-			if(http == null)
-				http = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url);
+			if(http == null) {				
+				// set parameters
+				HttpParams parameters = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(parameters, connectionTimeout);
+				HttpConnectionParams.setSoTimeout(parameters, responseTimeout);
+				http = new DefaultHttpClient(parameters);
+			}
 			
+			HttpGet request = new HttpGet(url);			
 			InputStream data = http.execute(request).getEntity().getContent();
 			byte[] buffer = new byte[1000];
 			StringBuilder output = new StringBuilder();
