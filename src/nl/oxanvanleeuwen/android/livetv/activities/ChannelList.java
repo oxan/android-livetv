@@ -120,6 +120,9 @@ public class ChannelList extends Activity {
     			Intent intent = new Intent(this, Preferences.class);
     			startActivity(intent);
     			break;
+    		case R.id.menu_exit:
+    			this.finish();
+    			break;
     	}
     	
     	return true;

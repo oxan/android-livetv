@@ -6,4 +6,5 @@
     <string name="streamfailed">Failed to start stream</string>
     <string name="channelfailed">Failed to load list of channels</string>
     <string name="preferences">Preferences</string>
+    <string name="exit">Exit</string>
 </resources>
