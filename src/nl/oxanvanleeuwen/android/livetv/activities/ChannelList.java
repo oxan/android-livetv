@@ -5,9 +5,11 @@ import nl.oxanvanleeuwen.android.livetv.R;
 import nl.oxanvanleeuwen.android.livetv.service.Channel;
 import nl.oxanvanleeuwen.android.livetv.service.MediaStreamService;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,28 +56,13 @@ public class ChannelList extends Activity {
         Log.v(TAG, "Loading channel list");
         ListView lv = (ListView)findViewById(R.id.channellist);
         
-        // set up service
+        // set up service and load channel list
     	String baseurl = preferences.getString("address", "");
         Log.d(TAG, "Using " + baseurl + " as base url for the webservice");
         if(baseurl.substring(baseurl.length() - 1) != "/")
         	baseurl += "/";
         service = new MediaStreamService(baseurl + "MediaStream.svc");
-        
-        // show all channels
-        try {
-            Log.v(TAG, "Started loading channels");
-            ArrayList<String> channels = new ArrayList<String>();
-			for(Channel channel : service.getChannels()) {
-				channels.add(channel.name);
-			}
-			String[] strlist = new String[]{};
-			ArrayAdapter<String> items = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, channels.toArray(strlist));
-			lv.setAdapter(items);
-			Log.v(TAG, "Loaded channels");
-		} catch (Exception e) {
-			Log.e(TAG, "Failed to show channel list", e);
-			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_SHORT);
-		}
+        new LoadChannelListTask().execute(this);
 		
 		// register callback when clicked on channel
 		lv.setOnItemClickListener(new OnItemClickListener() {
@@ -135,5 +122,35 @@ public class ChannelList extends Activity {
     		!preferences.getString("password", "").equals("") &&
     		!preferences.getString("transcoder", "").equals("") &&
     		!preferences.getString("transcoder", "").equals("Invalid");
+    }
+    
+    private class LoadChannelListTask extends AsyncTask<Context, Void, Boolean> {
+    	private ArrayAdapter<String> items; 
+    	
+    	protected Boolean doInBackground(Context... contexts) {
+            // show all channels
+            try {
+                Log.v(TAG, "Started loading channels");
+                ArrayList<String> channels = new ArrayList<String>();
+    			for(Channel channel : service.getChannels()) {
+    				channels.add(channel.name);
+    			}
+    			String[] strlist = new String[]{};
+    			items = new ArrayAdapter<String>(contexts[0], android.R.layout.simple_list_item_1, channels.toArray(strlist));
+    			Log.v(TAG, "Loaded channels");
+    			return true;
+    		} catch (Exception e) {
+    			Log.e(TAG, "Failed to show channel list", e);
+    			return false;
+    		}
+    	}
+    	
+    	protected void onPostExecute(Boolean result) {
+    		if(result) {
+    			((ListView)findViewById(R.id.channellist)).setAdapter(items);
+    		} else {
+    			Toast.makeText(ChannelList.this, getString(R.string.channelfailed), Toast.LENGTH_LONG);
+    		}
+    	}
     }
 }
